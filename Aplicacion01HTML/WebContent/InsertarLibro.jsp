@@ -1,10 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!-- sentencias de import necesarias para jdbc-->
-<%@ page import="java.sql.Connection"%>
-<%@ page import="java.sql.Statement"%>
-<%@ page import="java.sql.DriverManager"%>
-<%@ page import="java.sql.SQLException"%>
+<%@ page import="com.arquitecturajava.Libro"%>
 
 <%
 	//1
@@ -12,50 +9,14 @@
 	String titulo = request.getParameter("titulo");
 	String categoria = request.getParameter("categoria");
 	
-	Connection conexion = null;
-	Statement sentencia = null;
+	//realizo la consulta usando Libro y el codigo queda mas simplificado
 	
-	int filas=0;
-	try{
-		//2
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		conexion = DriverManager.getConnection("jdbc:mysql://localhost/arquitecturajava?zeroDateTimeBehavior=convertToNull&useSSL=false&useTimezone=true&serverTimezone=UTC", 
-				                               "root", "admin");
-		
-		sentencia = conexion.createStatement();
-		
-		//3
-		String consultaSQL = "insert into libros (isbn, titulo, categoria) values ";
-		consultaSQL += "('"+ isbn +"','"+ titulo +"','"+ categoria +"')";
-		
-		//4
-		filas = sentencia.executeUpdate(consultaSQL);
-		
-		conexion.close(); //cerrando conexion
-		
-		response.sendRedirect("MostrarLibros.jsp");
-		
-	} catch (ClassNotFoundException e){
-		System.out.println("Error en la carga del driver "+e.getMessage());
-	} catch (SQLException e){
-		System.out.println("Error accediendo a la base de datos "+e.getMessage());
-	}finally{
-		//5
-		if(sentencia != null){
-			try{
-				sentencia.close();
-			}catch(SQLException e){
-				System.out.println("Error cerrando la conexion "+e.getMessage());
-			}
-		}
-		if(conexion!=null){
-			try{
-				conexion.close();
-			}catch(SQLException e){
-				System.out.println("Error cerrando la conexion "+e.getMessage());
-			}
-		}
-	}
+	Libro libro = new Libro(isbn, titulo, categoria);
+	
+	libro.insertar();
+
+	response.sendRedirect("MostrarLibros.jsp");
+
 %>
 
     
