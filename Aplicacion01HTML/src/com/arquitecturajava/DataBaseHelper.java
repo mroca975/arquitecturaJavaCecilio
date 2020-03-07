@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseHelper<T> {
-	private static final String DRIVER = "com.mysql.jdbc.Driver";
+	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static final String URL = "jdbc:mysql://localhost/arquitecturajava?zeroDateTimeBehavior=convertToNull&useSSL=false&useTimezone=true&serverTimezone=UTC";
 	private static final String USUARIO = "root";
 	private static final String CLAVE = "admin";
 	
-	public int modificarRegistro(String consultaSQL) {
+	public int modificarRegistro(String consultaSQL) throws DataBaseException {
 		Connection conexion = null;
 		Statement sentencia = null;
 		int filasAfectadas = 0;
@@ -26,15 +26,18 @@ public class DataBaseHelper<T> {
 			sentencia = conexion.createStatement();
 			filasAfectadas = sentencia.executeUpdate(consultaSQL);
 		}catch (ClassNotFoundException e) {
-			System.out.println("Error de SQL "+e.getMessage());
+			System.out.println("Error, clase no encontrada " + e.getMessage());
+			throw new DataBaseException("Clase no encontrada", e);
 		}catch (SQLException e) {
-			System.out.println("Error de SQL "+e.getMessage());
+			System.out.println("Error de SQL " + e.getMessage());
+			throw new DataBaseException("Error de SQL", e);			
 		}finally {
 			if (sentencia != null) {
 				try {
 					sentencia.close();
 				}catch (SQLException e) {
 					System.out.println("Error en sentencia de SQL "+e.getMessage());
+					throw new DataBaseException("Error en sentencia de SQL");
 				}
 			}
 			
@@ -43,6 +46,7 @@ public class DataBaseHelper<T> {
 					conexion.close();
 				}catch (SQLException e) {
 					System.out.println("Error en conexion de SQL "+e.getMessage());
+					throw new DataBaseException("Error en sentencia de SQL");
 				}				
 			}
 		}
@@ -51,7 +55,7 @@ public class DataBaseHelper<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<T> seleccionarRegistros(String consultaSQL,Class<T> clase) {
+	public List<T> seleccionarRegistros(String consultaSQL,Class<T> clase) throws DataBaseException  {
 		Connection conexion = null;
 		Statement sentencia = null;
 		ResultSet filas = null;
@@ -76,13 +80,14 @@ public class DataBaseHelper<T> {
 			}
 		} catch (Exception e) {
 			System.out.println("Error al seleccionar registros" + e.getMessage());
+			throw new DataBaseException("Error al seleccionar registros", e);
 		}
 		finally {
 			if (sentencia != null) {
-				try {sentencia.close();} catch (SQLException e) {}
+				try {sentencia.close();} catch (SQLException e) {throw new DataBaseException("Algo Fallo1", e);}
 			}
 			if (conexion != null) {
-				try {conexion.close();} catch (SQLException e) {}
+				try {conexion.close();} catch (SQLException e) {throw new DataBaseException("Algo Fallo2", e);}
 			}
 		}
 		return listaDeObjetos;		

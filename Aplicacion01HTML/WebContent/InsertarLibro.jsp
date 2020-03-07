@@ -1,3 +1,4 @@
+<%@page import="com.arquitecturajava.DataBaseException"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!-- sentencias de import necesarias para jdbc-->
@@ -10,13 +11,12 @@
 	String categoria = request.getParameter("categoria");
 	
 	//realizo la consulta usando Libro y el codigo queda mas simplificado
-	
+
 	Libro libro = new Libro(isbn, titulo, categoria);
 	
 	libro.insertar();
 
-	response.sendRedirect("MostrarLibros.jsp");
-
+	response.sendRedirect("MostrarLibros.jsp");		
 %>
 
     

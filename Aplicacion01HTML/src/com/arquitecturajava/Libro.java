@@ -1,9 +1,6 @@
 package com.arquitecturajava;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
 
 public class Libro {
 	private String isbn;
