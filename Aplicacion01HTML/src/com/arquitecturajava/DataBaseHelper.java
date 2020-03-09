@@ -9,7 +9,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class DataBaseHelper<T> {
+	private static final Logger log = Logger.getLogger(DataBaseHelper.class.getPackage().getName()); 
+	
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static final String URL = "jdbc:mysql://localhost/arquitecturajava?zeroDateTimeBehavior=convertToNull&useSSL=false&useTimezone=true&serverTimezone=UTC";
 	private static final String USUARIO = "root";
@@ -26,17 +30,20 @@ public class DataBaseHelper<T> {
 			sentencia = conexion.createStatement();
 			filasAfectadas = sentencia.executeUpdate(consultaSQL);
 		}catch (ClassNotFoundException e) {
-			System.out.println("Error, clase no encontrada " + e.getMessage());
+			//System.out.println("Error, clase no encontrada " + e.getMessage());
+			log.error("Error de acceso al driver " + e.getMessage());
 			throw new DataBaseException("Clase no encontrada", e);
 		}catch (SQLException e) {
-			System.out.println("Error de SQL " + e.getMessage());
+			//System.out.println("Error de SQL " + e.getMessage());
+			log.error("Error de SQL " + e.getMessage());
 			throw new DataBaseException("Error de SQL", e);			
 		}finally {
 			if (sentencia != null) {
 				try {
 					sentencia.close();
 				}catch (SQLException e) {
-					System.out.println("Error en sentencia de SQL "+e.getMessage());
+					//System.out.println("Error en sentencia de SQL "+e.getMessage());
+					log.error("Error en sentencia de SQL " + e.getMessage());
 					throw new DataBaseException("Error en sentencia de SQL");
 				}
 			}
@@ -45,7 +52,8 @@ public class DataBaseHelper<T> {
 				try {
 					conexion.close();
 				}catch (SQLException e) {
-					System.out.println("Error en conexion de SQL "+e.getMessage());
+					//System.out.println("Error en conexion de SQL "+e.getMessage());
+					log.error("Error en conexion de SQL " + e.getMessage());
 					throw new DataBaseException("Error en sentencia de SQL");
 				}				
 			}
@@ -79,15 +87,22 @@ public class DataBaseHelper<T> {
 				listaDeObjetos.add(objeto);
 			}
 		} catch (Exception e) {
-			System.out.println("Error al seleccionar registros" + e.getMessage());
+			//System.out.println("Error al seleccionar registros" + e.getMessage());
+			log.error("Error al seleccionar registrossss " + e.getMessage());
 			throw new DataBaseException("Error al seleccionar registros", e);
 		}
 		finally {
 			if (sentencia != null) {
-				try {sentencia.close();} catch (SQLException e) {throw new DataBaseException("Algo Fallo1", e);}
+				try {sentencia.close();} catch (SQLException e) {
+						log.error("Algo Fallo1 " + e);
+						throw new DataBaseException("Algo Fallo1", e);
+					}
 			}
 			if (conexion != null) {
-				try {conexion.close();} catch (SQLException e) {throw new DataBaseException("Algo Fallo2", e);}
+				try {conexion.close();} catch (SQLException e) {
+						log.error("Algo Fallo2 " + e);
+						throw new DataBaseException("Algo Fallo2", e);
+					}
 			}
 		}
 		return listaDeObjetos;		
