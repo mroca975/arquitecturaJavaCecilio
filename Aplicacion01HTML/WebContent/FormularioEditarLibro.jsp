@@ -15,7 +15,7 @@
 		<script type="text/javascript" src="js/validacion.js"></script>
 	</head>
 <body>
-		<form id="miformulario" action="SalvarLibro.jsp" onsubmit="return validacion();">
+		<form id="miformulario" action="SalvarLibro.do" onsubmit="return validacion();">
 			<fieldset>
 				<legend>Formulario Editar Libro</legend>
 				
